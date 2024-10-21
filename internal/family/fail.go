@@ -11,7 +11,8 @@ import (
 var _ tea.Model = FailModel{}
 
 type FailModel struct {
-	count int
+	count     int
+	maxFailed int
 }
 
 func (m FailModel) Init() tea.Cmd {
@@ -21,22 +22,22 @@ func (m FailModel) Init() tea.Cmd {
 func (m FailModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg.(type) {
 	case OnFamilyFailMsg:
-		m.count++
+		if m.count < m.maxFailed {
+			m.count++
+		}
 	}
 	return m, nil
 }
 
 func (m FailModel) View() string {
-	var s strings.Builder
+	score := style.RootStyle.Border(lipgloss.DoubleBorder()).Align(lipgloss.Center).Padding(0, 1)
 
-	score := style.RootStyle.Border(lipgloss.DoubleBorder()).Align(lipgloss.Center).Padding(1, 1)
-	s.WriteString("[" + score.Render(strings.Repeat(" X ", m.count)) + "]")
-
-	return s.String()
+	return score.Render(strings.Repeat(" X ", m.count) + strings.Repeat("   ", m.maxFailed-m.count))
 }
 
 func newFail() tea.Model {
 	return FailModel{
-		count: 0,
+		count:     0,
+		maxFailed: 3,
 	}
 }

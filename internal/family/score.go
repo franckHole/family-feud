@@ -2,7 +2,6 @@ package family
 
 import (
 	"fmt"
-	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
@@ -28,12 +27,8 @@ func (m ScoreModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m ScoreModel) View() string {
-	var s strings.Builder
-
-	score := style.RootStyle.Border(lipgloss.DoubleBorder()).Align(lipgloss.Center).Padding(1, 1)
-	s.WriteString(score.Render(fmt.Sprint(m.value)))
-
-	return s.String()
+	score := style.RootStyle.Border(lipgloss.DoubleBorder()).Align(lipgloss.Center).Padding(0, 1)
+	return score.Render(fmt.Sprint(m.value))
 }
 
 func newScore() tea.Model {

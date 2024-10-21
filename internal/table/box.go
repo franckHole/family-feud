@@ -12,13 +12,13 @@ import (
 
 const defaultWidth = 30
 
-type animationMsg struct {
+type startAnimationMsg struct {
 	Id int // Id is the position on table (1 to 8)
 }
 
 func startAnimation(id int) tea.Cmd {
 	return func() tea.Msg {
-		return animationMsg{Id: id}
+		return startAnimationMsg{Id: id}
 	}
 }
 
@@ -33,10 +33,14 @@ type Box struct {
 	ticker *time.Ticker
 }
 
-func (m Box) nextFrame() tea.Cmd {
+type nextFrameMsg struct {
+	Id int // Id is the position on table (1 to 8)
+}
+
+func (m Box) nextFrame(id int) tea.Cmd {
 	return func() tea.Msg {
 		<-m.ticker.C
-		return animationMsg{Id: m.Id}
+		return nextFrameMsg{Id: id}
 	}
 }
 
@@ -53,7 +57,7 @@ func (m Box) showContent() string {
 	return s.String()
 }
 
-func (m Box) setStates() Box {
+func (m Box) setFrames() Box {
 	m.frames = []string{}
 	for _, frame := range []struct {
 		border  lipgloss.Border
@@ -78,11 +82,15 @@ func (m Box) Init() tea.Cmd {
 func (m Box) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
 	switch msg := msg.(type) {
-	case animationMsg:
+	case startAnimationMsg:
+		if msg.Id == m.Id && m.currentFrame == 0 {
+			cmd = m.nextFrame(m.Id)
+		}
+	case nextFrameMsg:
 		if msg.Id == m.Id {
 			if m.currentFrame < len(m.frames)-1 {
 				m.currentFrame++
-				cmd = m.nextFrame()
+				cmd = m.nextFrame(m.Id)
 			} else {
 				m.ticker.Stop()
 				cmd = onResult(Success, m.points)
@@ -106,7 +114,7 @@ func newBox(cfg BoxConfig, id int) tea.Model {
 		width:        defaultWidth,
 		ticker:       time.NewTicker(500 * time.Millisecond),
 	}
-	m = m.setStates()
+	m = m.setFrames()
 	return m
 }
 

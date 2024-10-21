@@ -29,10 +29,6 @@ func (m Model) Init() tea.Cmd {
 
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
-	case animationMsg:
-		var cmd tea.Cmd
-		m.boxes[msg.Id], cmd = m.boxes[msg.Id].Update(msg)
-		return m, cmd
 	case tea.KeyMsg:
 		if key.Matches(msg, m.keyMap.GoodChoice) {
 			i, err := strconv.Atoi(msg.String())
@@ -46,6 +42,14 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		} else if key.Matches(msg, m.keyMap.WrongChoice) {
 			return m, onResult(Failed, 0)
 		}
+	default:
+		var cmds []tea.Cmd
+		for i := range m.boxes {
+			var cmd tea.Cmd
+			m.boxes[i], cmd = m.boxes[i].Update(msg)
+			cmds = append(cmds, cmd)
+		}
+		return m, tea.Batch(cmds...)
 	}
 	return m, nil
 }

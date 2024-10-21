@@ -40,7 +40,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m Model) View() string {
 	var s strings.Builder
-	body := lipgloss.JoinVertical(lipgloss.Center, m.Name, m.Fails.View(), m.Score.View())
+
+	score := lipgloss.Place(lipgloss.Width(m.Fails.View()), lipgloss.Height(m.Score.View()), lipgloss.Center, lipgloss.Center, m.Score.View(), lipgloss.WithWhitespaceBackground(style.RootStyle.GetBackground()))
+	body := lipgloss.JoinVertical(lipgloss.Center, m.Name, m.Fails.View(), score)
 
 	s.WriteString(style.RootStyle.Border(lipgloss.DoubleBorder()).Align(lipgloss.Center).Padding(0, 1).Render(body))
 	return s.String()
