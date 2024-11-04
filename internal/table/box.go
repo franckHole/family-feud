@@ -28,7 +28,8 @@ type Box struct {
 	content      string
 	frames       []string
 	currentFrame int
-	width        int
+	Width        int
+	Height       int
 
 	ticker *time.Ticker
 }
@@ -49,10 +50,10 @@ func (m Box) showContent() string {
 	s.WriteString(fmt.Sprint(m.points))
 
 	s.WriteString(" | ")
-	if len(m.content) > m.width {
-		s.WriteString(m.content[:m.width])
+	if len(m.content) > m.Width {
+		s.WriteString(m.content[:m.Width])
 	} else {
-		s.WriteString(m.content + strings.Repeat(" ", m.width-len(m.content+s.String())))
+		s.WriteString(m.content + strings.Repeat(" ", m.Width-len(m.content+s.String())))
 	}
 	return s.String()
 }
@@ -63,10 +64,10 @@ func (m Box) setFrames() Box {
 		border  lipgloss.Border
 		content string
 	}{
-		{lipgloss.RoundedBorder(), strings.Repeat(" ", m.width)},
-		{lipgloss.HiddenBorder(), strings.Repeat("═", m.width)},
-		{lipgloss.HiddenBorder(), strings.Repeat("─", m.width)},
-		{lipgloss.HiddenBorder(), strings.Repeat("═", m.width)},
+		{lipgloss.RoundedBorder(), strings.Repeat(" ", m.Width)},
+		{lipgloss.HiddenBorder(), strings.Repeat("═", m.Width)},
+		{lipgloss.HiddenBorder(), strings.Repeat("─", m.Width)},
+		{lipgloss.HiddenBorder(), strings.Repeat("═", m.Width)},
 		{lipgloss.RoundedBorder(), m.showContent()},
 	} {
 		m.frames = append(m.frames, box(frame.border, frame.content))
@@ -82,6 +83,10 @@ func (m Box) Init() tea.Cmd {
 func (m Box) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
 	switch msg := msg.(type) {
+	case tea.WindowSizeMsg:
+		m.Width = msg.Width / 5
+		m.Height = msg.Height / 5
+		m = m.setFrames()
 	case startAnimationMsg:
 		if msg.Id == m.Id && m.currentFrame == 0 {
 			cmd = m.nextFrame(m.Id)
@@ -111,10 +116,8 @@ func newBox(cfg BoxConfig, id int) tea.Model {
 		points:       cfg.Points,
 		frames:       []string{""},
 		currentFrame: 0,
-		width:        defaultWidth,
 		ticker:       time.NewTicker(500 * time.Millisecond),
 	}
-	m = m.setFrames()
 	return m
 }
 

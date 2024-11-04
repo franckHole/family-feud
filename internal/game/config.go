@@ -6,6 +6,7 @@ import (
 )
 
 type Config struct {
-	Table    table.Config    `json:"table"`
-	Families []family.Config `json:"families"`
+	Table      table.Config  `json:"table"`
+	BlueFamily family.Config `json:"blueFamily"`
+	RedFamily  family.Config `json:"redFamily"`
 }

@@ -6,7 +6,7 @@ type ScoreMsg struct {
 	value int
 }
 
-func OnScoreMsg(value int) tea.Cmd {
+func OnScore(value int) tea.Cmd {
 	return func() tea.Msg {
 		return ScoreMsg{value: value}
 	}
@@ -19,5 +19,13 @@ type WinRoundScoreMsg struct {
 func OnWinRoundScore(value int) tea.Cmd {
 	return func() tea.Msg {
 		return WinRoundScoreMsg{Value: value}
+	}
+}
+
+type WinRound struct{}
+
+func OnWinRound() tea.Cmd {
+	return func() tea.Msg {
+		return WinRound{}
 	}
 }

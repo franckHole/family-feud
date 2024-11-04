@@ -19,7 +19,8 @@ var startCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		_, err := tea.NewProgram(
 			game.New(game.Config{
-				Families: []family.Config{{Name: "Blue"}, {Name: "Red"}},
+				BlueFamily: family.Config{Name: "Blue"},
+				RedFamily:  family.Config{Name: "Red"},
 				Table: table.Config{
 					Boxes: []table.BoxConfig{
 						{Points: 35, Answer: "Your mom"},

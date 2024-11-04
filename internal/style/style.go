@@ -14,6 +14,7 @@ const (
 	NeonMagenta    = lipgloss.Color("#FF00FF")
 	NeonPink       = lipgloss.Color("#FF007F")
 	NeonPurple     = lipgloss.Color("#D400FF")
+	RoyalBlue      = lipgloss.Color("#4169E1")
 	VividGreen     = lipgloss.Color("#00A300")
 )
 

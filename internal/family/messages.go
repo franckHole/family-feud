@@ -2,23 +2,22 @@ package family
 
 import tea "github.com/charmbracelet/bubbletea"
 
-type OnFamilyFailMsg struct {
-	Id int
-}
+type winValue int
 
-func OnFamilyFail(id int) tea.Cmd {
+func OnFamilyFail() tea.Cmd {
 	return func() tea.Msg {
-		return OnFamilyFailMsg{Id: id}
+		return winValue(-1)
 	}
 }
 
-type OnFamilyWinMsg struct {
-	Id    int
-	Score int
+func OnFamilyWin(value int) tea.Cmd {
+	return func() tea.Msg {
+		return winValue(value)
+	}
 }
 
-func OnFamilyWin(id int, score int) tea.Cmd {
+func OnFamilySelection(id FamilyName) tea.Cmd {
 	return func() tea.Msg {
-		return OnFamilyWinMsg{Id: id, Score: score}
+		return id
 	}
 }
